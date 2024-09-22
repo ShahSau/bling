@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes';
-
+import swaggerUI from 'swagger-ui-express';
+import specs  from './swagger';
 
 
 dotenv.config();
@@ -27,8 +28,8 @@ app.use(cors({
 
 
 
-// TODO: Integrar Swagger
-
+//Swagger
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
 
 app.use('/api/auth', authRoutes);
 
