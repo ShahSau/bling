@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { generateSecret } from '../utils/secretKey';
 import { generate2FToken } from '../utils/token2F';
-
+import { sendSMS } from '../services/twilioService';
 
 
 const generateToken = (userId: string) => {
@@ -12,26 +12,26 @@ const generateToken = (userId: string) => {
 };
 
 
+
 // User Registration
 export const register = async (req: Request, res: Response) => {
-    const { name, email, mobile, password } = req.body;
-  
-    if (!name || !email || !mobile || !password) {
-      return res.status(400).json({ message: 'All fields are required', success: false });
-    }
-  
-    try {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const user = new User({ name, email, mobile, password: hashedPassword });
-      user.userId = user._id.toString();
-      await user.save();
-      
-      res.status(201).json({ message: 'User registered successfully', success: true, error: null });
-    } catch (error) {
-      res.status(500).json({ message: 'Error registering user', error, success: false });
-    }
-};
+  const { name, email, mobile, password } = req.body;
 
+  if (!name || !email || !mobile || !password) {
+    return res.status(400).json({ message: 'All fields are required', success: false });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({ name, email, mobile, password: hashedPassword });
+    user.userId = user._id.toString();
+    await user.save();
+    
+    res.status(201).json({ message: 'User registered successfully', success: true, error: null });
+  } catch (error) {
+    res.status(500).json({ message: 'Error registering user', error, success: false });
+  }
+};
 
 // User Login with 2FA
 export const login = async (req: Request, res: Response) => {
@@ -55,6 +55,7 @@ export const login = async (req: Request, res: Response) => {
     user.twoFactorCodeExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min expiry
     await user.save();
 
+    sendSMS(user.mobile, `Your 2FA code is: ${twoFactorCode}`);
 
     res.status(200).json({ message: '2FA code sent', success: true, error: null });
   } catch (error) {
@@ -153,6 +154,7 @@ export const changePassword = async (req: Request, res: Response) => {
     user.twoFactorCodeExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min expiry
     await user.save();
 
+    sendSMS(user.mobile, `Your password change code is: ${twoFactorCode}`);
 
     res.status(200).json({ message: '2FA code sent for password change', success: true });
   } catch (error) {
@@ -201,6 +203,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     user.twoFactorCodeExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min expiry
     await user.save();
 
+    sendSMS(user.mobile, `Your password change code is: ${twoFactorCode}`);
 
     res.status(200).json({ message: '2FA code sent for password change', success: true });
   } catch (error) {
