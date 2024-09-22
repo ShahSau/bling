@@ -11,6 +11,8 @@ I would provide users with the option to choose their preferred method of verifi
 - Do you have any feedback regarding this coding challenge? <br />
 The first line of the User Story regarding registration is somewhat unclear. It mentions registering without a password, but later specifies that changing the password requires SMS verification. Providing more detailed instructions would help improve clarity.
 
+For reset password, I considered two senarios. one is changing password after logging in and another is changing password when user forgets the current password and unable to login.
+
 <p align="center">
     <h1 align="center">BLING Task</h1>
 </p>
@@ -118,6 +120,7 @@ To run the project, execute the following command:
 ```sh
 ❯ npm run dev
 ```
+Swagger is implemented in this project, so you can check and test the API via `http://localhost:8080/api-docs`
 
 To build the project, execute the following command:
 
