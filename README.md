@@ -114,6 +114,7 @@ To run the project, first create a .env file at the root of the project and set 
 `MONGO_URI` <br/>
 `PORT` <br/>
 
+To run the project, execute the following command:
 ```sh
 ❯ npm run dev
 ```
